@@ -32,13 +32,13 @@ const ENIGMA_SPECS = {
       }
     ],
     "Reflectors": [
-      { "Name": "UKW-A",
+      { "Name": "A",
         "Wiring": "EJMZALYXVBWFCRQUONTSPIKHGD"
       },
-      { "Name": "UKW-B",
+      { "Name": "B",
         "Wiring": "YRUHQSLDPXNGOKMIEBFZCWVJAT"
       },
-      { "Name": "UKW-C",
+      { "Name": "C",
         "Wiring": "FVPJIAOYEDRZXWGCTKUQSBNMHL"
       }
     ]

@@ -15,6 +15,22 @@ export default function Home() {
   const [currentOutput, setCurrentOutput] = useState("");
 
   useEffect(() => {
+    enigma.current.changeReflector("B");
+    function handleKeyEvent(e: KeyboardEvent) {
+      let key = e.key; 
+      if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
+      key = key.toUpperCase();
+      setCurrentInput(key);
+      let c = enigma.current.encodeLetter(key);
+      setCurrentOutput(c);
+    }
+
+    document.addEventListener("keyup", handleKeyEvent);
+
+    return () => document.removeEventListener("keyup", handleKeyEvent);
+  }, [])
+
+  useEffect(() => {
     setRotorPositions(enigma.current.rotorPositions);
   }, [enigma.current.rotorPositions])
 
@@ -22,23 +38,37 @@ export default function Home() {
     setPlugboard(enigma.current.plugboard); 
   }, [enigma.current.plugboard])
 
+  function handleKeyClick(key: string) {
+    if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
+    key = key.toUpperCase();
+    setCurrentInput(key);
+    let c = enigma.current.encodeLetter(key);
+    setCurrentOutput(c);
+  }
+
   // Page needs to update when: 
   // - plugboard is updated by user 
   // - rotor positions change 
   // - machine produces output 
 
-  function handleKeyEvent(key: string) {
-    if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
-
-    let c = enigma.current.encodeLetter(key);
-    console.log(c);
-  }
+  // function handleKeyEvent(key: string) {
+  //   console.log("called handleKeyEvent()");
+  //   if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
+  //   setCurrentInput(key);
+  //   let c = enigma.current.encodeLetter(key);
+  //   console.log(c);
+  //   setCurrentOutput(c);
+  // }
   return (
-    <main onKeyUp={e => handleKeyEvent(e.key)} className="h-full flex flex-col justify-center items-center">
+    <main className="h-full flex flex-col justify-center items-center">
       <div className="p-4 bg-zinc-900 flex flex-col items-center justify-center gap-4">
         <RotorBlock positions={rotorPositions}></RotorBlock>
-        <Lightboard currentValue={"A"} layout={enigma.current.keyboardLayout}></Lightboard>
-        <Keyboard currentValue={"T"} layout={enigma.current.keyboardLayout}></Keyboard>
+        <Lightboard currentValue={currentOutput ?? ""} layout={enigma.current.keyboardLayout}></Lightboard>
+        <Keyboard 
+          currentValue={currentInput ?? ""} 
+          layout={enigma.current.keyboardLayout}
+          onClick={handleKeyClick}
+        ></Keyboard>
       </div>
       <Plugboard mappings={plugboard}></Plugboard>
     </main>
