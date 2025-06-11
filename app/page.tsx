@@ -34,10 +34,12 @@ export default function Home() {
     console.log(c);
   }
   return (
-    <main onKeyUp={e => handleKeyEvent(e.key)}>
-      <RotorBlock positions={rotorPositions}></RotorBlock>
-      <Lightboard currentValue={currentOutput ?? ""} layout={enigma.current.keyboardLayout}></Lightboard>
-      <Keyboard currentValue={currentInput ?? ""} layout={enigma.current.keyboardLayout}></Keyboard>
+    <main onKeyUp={e => handleKeyEvent(e.key)} className="h-full flex flex-col justify-center items-center">
+      <div className="p-4 bg-zinc-900 flex flex-col items-center justify-center gap-4">
+        <RotorBlock positions={rotorPositions}></RotorBlock>
+        <Lightboard currentValue={"A"} layout={enigma.current.keyboardLayout}></Lightboard>
+        <Keyboard currentValue={"T"} layout={enigma.current.keyboardLayout}></Keyboard>
+      </div>
       <Plugboard mappings={plugboard}></Plugboard>
     </main>
   );
