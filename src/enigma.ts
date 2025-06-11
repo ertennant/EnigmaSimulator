@@ -4,9 +4,14 @@
  */
 
 import ENIGMA_SPECS from "./enigma-specs.js";
-import { numToChar} from "./enigma-util";
+import { charToNum, numToChar} from "./enigma-util";
 import Rotor from "./rotor";
 import Reflector from "./reflector";
+
+export type EnigmaConfig = {
+  rotors: {name: string, position: string}[], 
+  reflector: string 
+}
 
 export default class Enigma {
   model: string;
@@ -62,6 +67,17 @@ export default class Enigma {
     return this.rotors.map(rotor => numToChar(rotor.currentPosition));
   }
 
+  getRotorList(): string[] {
+    return this.rotors.map(rotor => rotor.name);
+  }
+
+  getRotorInfo(): Array<{name: string, position: string}> {
+    return this.rotors.map(rotor => ({
+      name: rotor.name, 
+      position: numToChar(rotor.currentPosition)
+    }));
+  }
+
   setRotorPositions(newPositions: string[]): void {
     for (let i = 0; i < Math.min(this.rotors.length, newPositions.length); i++) {
       this.rotors[i].setPosition(newPositions[i]);
@@ -101,6 +117,25 @@ export default class Enigma {
     } else {
       throw new Error("Error: cannot change rotor because rotor position " + position + " is out of range.");
     }
+  }
+
+  initialize(options: EnigmaConfig): void {
+    this.changeReflector(options.reflector);
+
+    for (let i = 0; i < this.rotors.length; i++) {
+      let rotorData = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Rotors.filter(r => r.Name == options.rotors[i].name);
+      if (!rotorData) {
+        throw new Error("Error: no rotor with the specified name exists.");
+      }
+      this.rotors[i] = new Rotor(rotorData[0].Name, rotorData[0].Wiring, this.ETW, rotorData[0].Turnover);
+      this.rotors[i].setPosition(options.rotors[i].position); 
+    }
+    this.rotorPositions = this.getRotorPositions(); 
+  }
+
+  changeRotorPosition(rotorName: string, position: string) {
+    this.rotors.filter(rotor => (rotor.name == rotorName))[0].setPosition(position); 
+    this.rotorPositions = this.getRotorPositions(); 
   }
 
   stepRotors(): void {
