@@ -150,6 +150,18 @@ export default class Enigma {
     this.rotorPositions = this.getRotorPositions();
   }
 
+  undo(): void {
+    this.rotors[this.rotors.length - 1].reverseStep();
+    let next = this.rotors[this.rotors.length - 1].notchIsEngaged(); 
+    for (let i = this.rotors.length - 2; i > -1; i--) {
+      if (next) {
+        this.rotors[i].reverseStep(); 
+        next = this.rotors[i].notchIsEngaged(); 
+      }
+    }
+    this.rotorPositions = this.getRotorPositions(); 
+  }
+
   encodeLetter(letter: string): string {
     let c = letter.charAt(0).toUpperCase();
     if (!this.ETW.includes(letter)) {

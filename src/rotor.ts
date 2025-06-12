@@ -61,6 +61,10 @@ export default class Rotor {
     return; 
   }
 
+  reverseStep(): void {
+    this.currentPosition = (this.currentPosition - 1 + this.alphabetLength) % this.alphabetLength;
+  }
+
   notchIsEngaged(): boolean {
     for (const pos of this.turnoverPositions) {
       if (pos == this.currentPosition) {

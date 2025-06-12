@@ -51,8 +51,38 @@ export default function Home() {
     setPlugboard(enigma.current.plugboard); 
   }, [enigma.current.plugboard])
 
+  function handleUpdateInput(text: string) {
+    if (text.length == inputText.length + 1) {
+      let key = text.charAt(text.length - 1).toUpperCase();
+      setCurrentInput(key);
+      setInputText(inputText + key);
+      let c = enigma.current.encodeLetter(key);
+      setCurrentOutput(c);
+      setOutputText(outputText + c);
+    } else if (text.length == inputText.length - 1) {
+      enigma.current.undo(); 
+      setRotorInfo(enigma.current.getRotorInfo()); 
+      setInputText(inputText.slice(0, inputText.length - 1));
+      setOutputText(outputText.slice(0, outputText.length - 1));
+      setCurrentInput(inputText.charAt(inputText.length - 1));
+      setCurrentOutput(outputText.charAt(outputText.length - 1));
+    }
+  }
   function handleKeyClick(key: string) {
-    if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
+    // if (key == "Backspace") {
+    //   if (inputText.length == 0) return; 
+
+    //   console.log("handleKeyClick() - detected backspace")
+    //   enigma.current.undo(); 
+    //   setInputText(inputText.slice(0, inputText.length - 1));
+    //   setOutputText(outputText.slice(0, outputText.length - 1));
+    //   setCurrentInput(inputText.charAt(inputText.length - 1));
+    //   setCurrentOutput(outputText.charAt(outputText.length - 1));
+    //   return; 
+    // }
+
+    if (key.length > 1) return; // Ignore non-letter keys. 
+
     key = key.toUpperCase();
     setCurrentInput(key);
     setInputText(inputText + key);
@@ -130,7 +160,7 @@ export default function Home() {
           : 
           <>
             <TextArea content={outputText} editable={false} placeholderText="Your encoded message will appear here."></TextArea>
-            <TextArea content={inputText} editable={true} onChange={e => handleKeyClick(e.currentTarget.value.charAt(e.currentTarget.value.length - 1))} css="border-2 border-zinc-500" placeholderText="[Type Here]"></TextArea>
+            <TextArea content={inputText} editable={true} onChange={e => handleUpdateInput(e.currentTarget.value)} css="border-2 border-zinc-500" placeholderText="[Type Here]"></TextArea>
           </>
         }
       </div>
