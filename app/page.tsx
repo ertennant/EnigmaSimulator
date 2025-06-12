@@ -5,29 +5,36 @@ import Lightboard from "./lightboard";
 import Keyboard from "./keyboard";
 import Plugboard from "./plugboard";
 import RotorBlock from "./rotor-block";
-import { SetStateAction, useEffect, useState, useRef } from "react";
+import { SetStateAction, useEffect, useState, useRef, KeyboardEventHandler } from "react";
 import ConfigPanel from "./config-panel";
 import ENIGMA_SPECS from "@/src/enigma-specs";
+import TextArea from "./text-area";
+import Image from "next/image";
 
 export default function Home() {
   const enigma = useRef(new Enigma("Enigma I"));
   const [rotorInfo, setRotorInfo] : [any[], React.Dispatch<SetStateAction<any[]>>] = useState(enigma.current.getRotorInfo());
   const [plugboard, setPlugboard] = useState(enigma.current.plugboard);
-  // const [showLightboard, setShowLightboard] = useState(true); // toggle between showing simulator keyboards and textareas 
   const [openConfigPanel, setOpenConfigPanel] = useState(false); // open/close the configuation panel 
   const [currentInput, setCurrentInput] = useState(""); // most recent letter entered 
   const [currentOutput, setCurrentOutput] = useState(""); // Enigma encoding of most recent letter entered 
+  const [showLightboard, setShowLightboard] = useState(true); // toggle between showing simulator keyboards and textareas 
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
 
   useEffect(() => {
     enigma.current.changeReflector("B");
     function handleKeyEvent(e: KeyboardEvent) {
-      if ((e.target as HTMLElement).tagName == "INPUT") return; 
+      if (showLightboard == false) return; 
+      if (["INPUT", "TEXTAREA"].includes((e.target as HTMLElement).tagName)) return; 
 
       let key = e.key; 
       if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
       key = key.toUpperCase();
+      setInputText(inputText + key);
       setCurrentInput(key);
       let c = enigma.current.encodeLetter(key);
+      setOutputText(outputText + c);
       setCurrentOutput(c);
     }
 
@@ -48,8 +55,10 @@ export default function Home() {
     if (key.length > 1) return; // for now, ignore things like 'Enter' and 'Backspace' 
     key = key.toUpperCase();
     setCurrentInput(key);
+    setInputText(inputText + key);
     let c = enigma.current.encodeLetter(key);
     setCurrentOutput(c);
+    setOutputText(outputText + c);
   }
 
   function handleChangeConfig(config: {reflector: string, rotors: {name: string, position: string}[]}) {
@@ -72,8 +81,21 @@ export default function Home() {
   //   setCurrentOutput(c);
   // }
   return (
-    <main className="h-full flex flex-col justify-center items-center">
-      <div className="p-4 bg-zinc-900 flex flex-col items-center justify-center gap-4">
+    <main className="relative h-full flex flex-col justify-center items-center">
+      <button 
+        className="absolute right-0 top-0 m-2 cursor-pointer" 
+        onClick={() => setShowLightboard(!showLightboard)}
+        title={showLightboard ? "Hide Keyboard" : "Show Keyboard"}
+        >
+        <Image
+          src={showLightboard ? "./keyboard-off.svg" : "./keyboard.svg"}
+          alt={showLightboard ? "Hide Keyboard" : "Show Keyboard"}
+          height={30}
+          width={30}
+        >
+        </Image>
+      </button>
+      <div className="p-4 bg-zinc-900 flex flex-col items-center justify-center gap-4" >
         {openConfigPanel 
         ? 
         <ConfigPanel
@@ -96,12 +118,21 @@ export default function Home() {
         : <RotorBlock positions={rotorInfo} onClick={() => setOpenConfigPanel(true)}></RotorBlock>
         }
         <p className="font-[Roboto_Mono] font-bold text-neutral-200 bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% py-2 px-4 ">{enigma.current.model}</p>
-        <Lightboard currentValue={currentOutput ?? ""} layout={enigma.current.keyboardLayout}></Lightboard>
-        <Keyboard 
-          currentValue={currentInput ?? ""} 
-          layout={enigma.current.keyboardLayout}
-          onClick={handleKeyClick}
-        ></Keyboard>
+        {showLightboard ? 
+          <>
+            <Lightboard currentValue={currentOutput ?? ""} layout={enigma.current.keyboardLayout}></Lightboard>
+            <Keyboard 
+              currentValue={currentInput ?? ""} 
+              layout={enigma.current.keyboardLayout}
+              onClick={handleKeyClick}
+            ></Keyboard>
+          </>
+          : 
+          <>
+            <TextArea content={outputText} editable={false} placeholderText="Your encoded message will appear here."></TextArea>
+            <TextArea content={inputText} editable={true} onChange={e => handleKeyClick(e.currentTarget.value.charAt(e.currentTarget.value.length - 1))} css="border-2 border-zinc-500" placeholderText="[Type Here]"></TextArea>
+          </>
+        }
       </div>
       <Plugboard mappings={plugboard}></Plugboard>
     </main>
