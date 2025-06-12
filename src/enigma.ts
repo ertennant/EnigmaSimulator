@@ -56,12 +56,18 @@ export default class Enigma {
     this.plugboard.set(b, a);
   }
 
-  setPlugboard(values: string): void {
-    let pairs = values.split(",");
+  setPlugboard(pairs: string[][]): void {
     for (const pair of pairs) {
-      this.updatePlugboard(pair.charAt(0), pair.charAt(1));
+      this.updatePlugboard(pair[0], pair[1]);
     }
   }
+
+  // setPlugboard(values: string): void {
+  //   let pairs = values.split(",");
+  //   for (const pair of pairs) {
+  //     this.updatePlugboard(pair.charAt(0), pair.charAt(1));
+  //   }
+  // }
 
   getRotorPositions(): string[] {
     return this.rotors.map(rotor => numToChar(rotor.currentPosition));

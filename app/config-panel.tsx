@@ -28,6 +28,7 @@ export default function ConfigPanel({currentConfig, modelOptions, configOptions,
   // }
 
   function handleChangeConfig(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); 
     let temp = {...currentConfig};
     temp.reflector = event.currentTarget.reflector.value; 
     for (let i = 0; i < currentConfig.rotors.length; i++) {

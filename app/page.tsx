@@ -14,13 +14,14 @@ import Image from "next/image";
 export default function Home() {
   const enigma = useRef(new Enigma("Enigma I"));
   const [rotorInfo, setRotorInfo] : [any[], React.Dispatch<SetStateAction<any[]>>] = useState(enigma.current.getRotorInfo());
-  const [plugboard, setPlugboard] = useState(enigma.current.plugboard);
+  const [plugboard, setPlugboard] = useState(Array.from(enigma.current.plugboard));
   const [openConfigPanel, setOpenConfigPanel] = useState(false); // open/close the configuation panel 
   const [currentInput, setCurrentInput] = useState(""); // most recent letter entered 
   const [currentOutput, setCurrentOutput] = useState(""); // Enigma encoding of most recent letter entered 
   const [showLightboard, setShowLightboard] = useState(true); // toggle between showing simulator keyboards and textareas 
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
+  const [plugboardIsOpen, setPlugboardIsOpen] = useState(false); // open/close the configuation panel 
 
   useEffect(() => {
     enigma.current.changeReflector("B");
@@ -48,7 +49,7 @@ export default function Home() {
   }, [enigma.current.rotorPositions])
 
   useEffect(() => {
-    setPlugboard(enigma.current.plugboard); 
+    setPlugboard(Array.from(enigma.current.plugboard)); 
   }, [enigma.current.plugboard])
 
   function handleUpdateInput(text: string) {
@@ -95,6 +96,10 @@ export default function Home() {
     setOpenConfigPanel(false);
     console.log(config);
     enigma.current.initialize(config);
+  }
+
+  function handleChangePlugboard(pairs: string[][]) {
+    enigma.current.setPlugboard(pairs);
   }
   
   // Page needs to update when: 
@@ -163,8 +168,8 @@ export default function Home() {
             <TextArea content={inputText} editable={true} onChange={e => handleUpdateInput(e.currentTarget.value)} css="border-2 border-zinc-500" placeholderText="[Type Here]"></TextArea>
           </>
         }
+        <Plugboard mappings={plugboard} onSubmit={handleChangePlugboard} isVisible={plugboardIsOpen} togglePlugboard={() => setPlugboardIsOpen(!plugboardIsOpen)}></Plugboard>
       </div>
-      <Plugboard mappings={plugboard}></Plugboard>
     </main>
   );
 }
