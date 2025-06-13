@@ -29,7 +29,7 @@ export default function Plugboard({mappings, onSubmit, isVisible, togglePlugboar
 
   return (
     <div className="flex flex-row justify-center p-2 text-center bg-zinc-800 w-150 flex-wrap">
-      <button onClick={togglePlugboard} className={(isVisible ? "hidden" : "") + " button bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 p-2"}>Show Plugboard</button>
+      <button onClick={togglePlugboard} className={(isVisible ? "hidden" : "") + " button bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 p-2 text-white font-bold font-[Roboto_Mono]"}>Show Plugboard</button>
       <form className={(isVisible ? "" : "hidden")} onSubmit={handleSubmit}>
         {
           (Array.from( { length: 10 }, (_, i) => 0 + i * 1)).map((num, idx) => 
@@ -52,8 +52,8 @@ export default function Plugboard({mappings, onSubmit, isVisible, togglePlugboar
           )
         }
         <div className="m-2">
-          <button className="button mx-1 bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 px-2 w-[5em]" type="submit">OK</button>
-          <button className="button mx-1 bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 px-2 w-[5em]" type="button" onClick={togglePlugboard}>Cancel</button>
+          <button className="button mx-1 bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 px-2 w-[5em] text-white font-bold font-[Roboto_Mono]" type="submit">OK</button>
+          <button className="button mx-1 bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 px-2 w-[5em] text-white font-bold font-[Roboto_Mono]" type="button" onClick={togglePlugboard}>Cancel</button>
         </div>
       </form>
     </div>

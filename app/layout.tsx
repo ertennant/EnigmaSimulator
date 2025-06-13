@@ -39,7 +39,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-between h-screen w-full`}
       >
         {children}
-        <footer className="flex flex-row justify-between items-center p-2">
+        <footer className="flex flex-row justify-between bg-black text-white items-center p-2">
           <div></div>
           <small>Copyright &copy; Elizabeth Tennant 2025</small>
           <a href="https://github.com/ertennant">

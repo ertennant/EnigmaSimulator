@@ -36,3 +36,11 @@ body {
   text-align: center;
   align-content: center;
 }
+
+.bg-metal {
+  background: radial-gradient(circle at 25% 25%, oklch(0.556 0 0), oklch(0.371 0 0) 75%);
+}
+
+.bg-metal-disabled {
+  background: radial-gradient(circle at 25% 25%, oklch(0.442 0.017 285.786), oklch(0.371 0 0) 75%);
+}

@@ -59,9 +59,6 @@ export default function Home() {
    * @param key The letter the user entered, or "Backspace" if they used the backspace key. 
    */
   function handleInputLetter(key: string): void {
-    console.log("handleInputLetter()");
-    console.log("inputText = " + inputText);
-
     if (key == "Backspace") {
       if (inputText.length == 0) return; 
 
@@ -118,7 +115,7 @@ export default function Home() {
   }
   
   return (
-    <main className="relative h-full flex flex-col justify-center items-center" >
+    <main className="relative bg-black h-full flex flex-col justify-center items-center" >
       <button 
         className="absolute right-0 top-0 m-2 cursor-pointer" 
         onClick={() => setShowLightboard(!showLightboard)}
@@ -163,11 +160,12 @@ export default function Home() {
         </select>
         {showLightboard ? 
           <>
-            <Lightboard currentValue={outputText.length > 0 ? outputText.charAt(outputText.length - 1) : ""} layout={enigma.current.keyboardLayout}></Lightboard>
+            <Lightboard currentValue={outputText.length > 0 ? outputText.charAt(outputText.length - 1) : ""} layout={enigma.current.keyboardLayout} isEnabled={!showConfigPanel && !showPlugboard}></Lightboard>
             <Keyboard 
               currentValue={inputText.length > 0 ? inputText.charAt(inputText.length - 1) : ""} 
               layout={enigma.current.keyboardLayout}
               onClick={handleInputLetter}
+              isEnabled={!showConfigPanel && !showPlugboard}
             ></Keyboard>
           </>
           : 

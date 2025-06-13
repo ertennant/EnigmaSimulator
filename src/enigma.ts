@@ -181,7 +181,7 @@ export default class Enigma {
   }
 
   /**
-   * 
+   * Encodes a single letter. 
    * @param letter The original letter.
    * @returns The encoded result.
    */
