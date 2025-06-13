@@ -1,4 +1,4 @@
-import { FormEvent, MouseEventHandler, useState } from "react"
+import { FormEvent } from "react"
 import { EnigmaConfig } from "@/src/enigma";
 
 type ConfigPanelProps = {
@@ -7,25 +7,15 @@ type ConfigPanelProps = {
     reflector: string, 
     rotors: {name: string, position: string}[],
   },
-  modelOptions: string[], 
   configOptions: {
     rotors: string[], 
     reflectors: string[], 
-    // rotorPositions: string[], 
   }, 
-  // onChangeModel: (name: string) => void, 
   onChangeConfig: (options: EnigmaConfig) => void, 
   onCancel: () => void, 
 }
 
-export default function ConfigPanel({currentConfig, modelOptions, configOptions, onChangeConfig, onCancel}: ConfigPanelProps) {
-  // const [config, setConfig] = useState(currentConfig);
-
-  // function handleChangeModel(name: string) {
-  //   if (name != currentConfig.model) {
-  //     onChangeModel(name);
-  //   }
-  // }
+export default function ConfigPanel({currentConfig, configOptions, onChangeConfig, onCancel}: ConfigPanelProps) {
 
   function handleChangeConfig(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); 

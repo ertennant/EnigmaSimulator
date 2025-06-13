@@ -1,3 +1,7 @@
+/**
+ * The Plugboard component provides an interface for specifying which letters (if any) to swap before encoding with the rotors. 
+ */
+
 import { FormEvent } from "react";
 
 type PlugboardProps = {
@@ -33,12 +37,14 @@ export default function Plugboard({mappings, onSubmit, isVisible, togglePlugboar
               <input 
                 name={"pair-" + idx + "-1"}
                 type="text" 
+                maxLength={1}
                 defaultValue={mappings[idx] ? (mappings[idx][0] ?? "") : ""}
                 className="w-[2em] h-[2em] text-center bg-zinc-900 m-1 rounded-sm"
               ></input>
               <input 
                 name={"pair-" + idx + "-2"}
                 type="text" 
+                maxLength={1}
                 defaultValue={mappings[idx] ? (mappings[idx][1] ?? "") : ""}
                 className="w-[2em] h-[2em] text-center bg-zinc-900 m-1 rounded-sm"
               ></input>

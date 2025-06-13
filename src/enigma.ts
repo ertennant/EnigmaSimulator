@@ -15,30 +15,43 @@ export type EnigmaConfig = {
 
 export default class Enigma {
   model: string;
-  ETW: string; 
-  rotors: Rotor[];   
-  reflector: Reflector; 
-  plugboard: Map<string, string>; 
-  rotorPositions: String[]; 
-  keyboardLayout: string[][]; 
+  ETW!: string; 
+  rotors!: Rotor[];   
+  reflector!: Reflector; 
+  plugboard!: Map<string, string>; 
+  rotorPositions!: String[]; 
+  keyboardLayout!: string[][]; 
 
   constructor(model: string) {
     if (Object.hasOwn(ENIGMA_SPECS, model)) {
       this.model = model; 
-      this.ETW = ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].ETW; 
-      this.rotors = []; 
-      for (let i = 0; i < ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].NumRotors; i++) {
-        this.rotors.push(new Rotor(ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].Rotors[i].Name, ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].Rotors[i].Wiring, this.ETW, ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].Rotors[i].Turnover));
-      }
-      this.reflector = new Reflector(ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].Reflectors[0].Name, ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].Reflectors[0].Wiring);
-      this.plugboard = new Map(); 
-      this.rotorPositions = this.getRotorPositions(); 
-      this.keyboardLayout = ENIGMA_SPECS[model as keyof typeof ENIGMA_SPECS].Keyboard; 
+      this.setupMachine(); 
     } else {
       throw new Error("Error: cannot initialize machine because model " + model + " does not exist in enigma-specs data file.");
     }
   }
 
+  /**
+   * Initializes the machine configuration. 
+   */
+  setupMachine() {
+    let data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
+    this.ETW = data.ETW; 
+    this.rotors = []; 
+    for (let i = 0; i < data.NumRotors; i++) {
+      this.rotors.push(new Rotor(data.Rotors[i].Name, data.Rotors[i].Wiring, this.ETW, data.Rotors[i].Turnover));
+    }
+    this.reflector = new Reflector(data.Reflectors[1].Name, data.Reflectors[1].Wiring);
+    this.plugboard = new Map(); 
+    this.keyboardLayout = data.Keyboard; 
+
+  }
+
+  /**
+   * Updates the plugboard to swap the two specified letters. 
+   * @param a The first letter to swap.
+   * @param b The second letter to swap. 
+   */
   updatePlugboard(a: string, b: string): void {
     if (!a || !b) {
       throw new Error("Error: cannot update plugboard because one or more of the specified letters are undefined.");
@@ -56,25 +69,14 @@ export default class Enigma {
     this.plugboard.set(b, a);
   }
 
+  /**
+   * (Re-)initializes the plugboard letter pairs. 
+   * @param pairs A list of letter pairs to swap. 
+   */
   setPlugboard(pairs: string[][]): void {
     for (const pair of pairs) {
       this.updatePlugboard(pair[0], pair[1]);
     }
-  }
-
-  // setPlugboard(values: string): void {
-  //   let pairs = values.split(",");
-  //   for (const pair of pairs) {
-  //     this.updatePlugboard(pair.charAt(0), pair.charAt(1));
-  //   }
-  // }
-
-  getRotorPositions(): string[] {
-    return this.rotors.map(rotor => numToChar(rotor.currentPosition));
-  }
-
-  getRotorList(): string[] {
-    return this.rotors.map(rotor => rotor.name);
   }
 
   getRotorInfo(): Array<{name: string, position: string}> {
@@ -88,7 +90,6 @@ export default class Enigma {
     for (let i = 0; i < Math.min(this.rotors.length, newPositions.length); i++) {
       this.rotors[i].setPosition(newPositions[i]);
     }
-    this.rotorPositions = this.getRotorPositions(); 
   }
 
   setRotors(rotorList: string[]): void {
@@ -125,7 +126,16 @@ export default class Enigma {
     }
   }
 
-  initialize(options: EnigmaConfig): void {
+  changeModel(modelName: string) {
+    if (Object.hasOwn(ENIGMA_SPECS, modelName)) {
+      this.model = modelName; 
+      this.setupMachine(); 
+    } else {
+      throw new Error("Error: cannot initialize machine because model " + modelName + " does not exist in enigma-specs data file.");
+    }
+  }
+
+  reinitialize(options: EnigmaConfig): void {
     this.changeReflector(options.reflector);
 
     for (let i = 0; i < this.rotors.length; i++) {
@@ -136,14 +146,15 @@ export default class Enigma {
       this.rotors[i] = new Rotor(rotorData[0].Name, rotorData[0].Wiring, this.ETW, rotorData[0].Turnover);
       this.rotors[i].setPosition(options.rotors[i].position); 
     }
-    this.rotorPositions = this.getRotorPositions(); 
   }
 
   changeRotorPosition(rotorName: string, position: string) {
     this.rotors.filter(rotor => (rotor.name == rotorName))[0].setPosition(position); 
-    this.rotorPositions = this.getRotorPositions(); 
   }
 
+  /**
+   * Moves any rotors that should move before the next letter input is processed. 
+   */
   stepRotors(): void {
     let next = this.rotors[this.rotors.length - 1].notchIsEngaged(); 
     this.rotors[this.rotors.length - 1].step(); 
@@ -153,9 +164,11 @@ export default class Enigma {
         this.rotors[i].step(); 
       }
     }
-    this.rotorPositions = this.getRotorPositions();
   }
 
+  /**
+   * Reverts the machine state to its state before the most recent letter input. 
+   */
   undo(): void {
     this.rotors[this.rotors.length - 1].reverseStep();
     let next = this.rotors[this.rotors.length - 1].notchIsEngaged(); 
@@ -165,9 +178,13 @@ export default class Enigma {
         next = this.rotors[i].notchIsEngaged(); 
       }
     }
-    this.rotorPositions = this.getRotorPositions(); 
   }
 
+  /**
+   * 
+   * @param letter The original letter.
+   * @returns The encoded result.
+   */
   encodeLetter(letter: string): string {
     let c = letter.charAt(0).toUpperCase();
     if (!this.ETW.includes(letter)) {
@@ -177,7 +194,6 @@ export default class Enigma {
     
     // the rotors move before they receive input 
     this.stepRotors(); 
-    // console.log(this.rotorPositions);
 
     // the result is fed through the plugboard 
     c = this.plugboard.get(c) ?? c; 
@@ -205,6 +221,11 @@ export default class Enigma {
     return c; 
   }
 
+  /**
+   * Processes a multiple-letter message. 
+   * @param message The original message. 
+   * @returns The encoded result. 
+   */
   encodeMessage(message: string): string {
     let output = "";
     for (let i = 0; i < message.length; i++) {

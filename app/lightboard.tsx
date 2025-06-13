@@ -1,3 +1,8 @@
+/**
+ * The Lightboard component provides a visual representation of the Enigma machine lightboard.
+ * When a key is pressed on the Keyboard, the letter that it encodes to lights up on the Lightboard. 
+ */
+
 type LightboardProps = {
   currentValue: string, 
   layout: string[][]

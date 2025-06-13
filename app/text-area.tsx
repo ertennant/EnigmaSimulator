@@ -1,3 +1,8 @@
+/**
+ * The TextArea component is a more human-friendly (but less historically accurate) substitute for the Keyboard and Lightboard. 
+ * It allows the user to view the original and encoded versions of the entire message, rather than just the most recently entered letter. 
+ */
+
 import { ChangeEvent } from "react"
 
 type TextAreaProps = {
