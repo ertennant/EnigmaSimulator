@@ -25,6 +25,7 @@ export default function RotorBlock({rotorInfo, onClick}: RotorBlockProps) {
           pos={rotor.position}
           i={i}
           len={rotorInfo.length}
+          onClick={onClick}
         >
         </Rotor>
       )}

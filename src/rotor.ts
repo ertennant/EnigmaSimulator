@@ -75,9 +75,7 @@ export default class Rotor {
   }
 
   setPosition(letter: string): void {
-    console.log("setPosition(" + letter + ")");
     this.currentPosition = charToNum(letter);
-    console.log(this.currentPosition);
   }
 }
 

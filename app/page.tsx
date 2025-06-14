@@ -29,6 +29,8 @@ export default function Home() {
   const handleKeyEvent = useCallback((event: KeyboardEvent) => {
     if (["INPUT", "TEXTAREA"].includes((event.target as HTMLElement).tagName)) return; 
 
+    if (showConfigPanel || showPlugboard) return; 
+
     if (event.key == "Backspace") {
       if (inputText.length == 0) return; // backspace on empty string is meaningless, ignore it 
 
@@ -43,16 +45,12 @@ export default function Home() {
       setOutputText(outputText + c);
       setRotorInfo(enigma.current.getRotorInfo());
     } 
-  }, [inputText, outputText])
+  }, [inputText, outputText, showConfigPanel, showPlugboard])
 
   useEffect(() => {
     document.addEventListener("keyup", handleKeyEvent); // this way, the user can use their keyboard to activate the simulator keys 
     return () => document.removeEventListener("keyup", handleKeyEvent);
   }, [handleKeyEvent])
-
-  // useEffect(() => {
-  //   setPlugboard(Array.from(enigma.current.plugboard)); 
-  // }, [enigma.current.plugboard])
 
   /**
    * Equivalent to handleKeyEvent, but takes a string instead of a KeyboardEvent parameter. 
@@ -102,8 +100,10 @@ export default function Home() {
    */
   function handleChangeConfig(config: {reflector: string, rotors: {name: string, position: string}[]}) {
     setShowConfigPanel(false);
-    // console.log(config);
     enigma.current.reinitialize(config);
+    if (inputText.length > 0) {
+      setOutputText(enigma.current.encodeMessage(inputText));
+    }
   }
 
   /**
@@ -112,12 +112,15 @@ export default function Home() {
    */
   function handleChangePlugboard(pairs: string[][]): void {
     enigma.current.setPlugboard(pairs);
+    if (inputText.length > 0) {
+      setOutputText(enigma.current.encodeMessage(inputText));
+    }
   }
   
   return (
-    <main className="relative bg-black h-full flex flex-col justify-center items-center" >
+    <main className="relative p-4 bg-black h-full flex flex-col justify-center items-center" >
       <button 
-        className="absolute right-0 top-0 m-2 cursor-pointer" 
+        className="absolute right-0 top-0 m-2 cursor-pointer rounded-full p-2 hover:bg-zinc-700" 
         onClick={() => setShowLightboard(!showLightboard)}
         title={showLightboard ? "Hide Keyboard" : "Show Keyboard"}
         >
@@ -170,11 +173,12 @@ export default function Home() {
           </>
           : 
           <>
-            <TextArea content={outputText} editable={false} placeholderText="Your encoded message will appear here."></TextArea>
+            <TextArea content={outputText} editable={false} isEnabled={!showConfigPanel && !showPlugboard} placeholderText="Your encoded message will appear here."></TextArea>
             <TextArea 
               content={inputText} 
               editable={true} 
               onChange={handleChangeInput} 
+              isEnabled={!showConfigPanel && !showPlugboard}
               css="border-2 border-zinc-500" 
               placeholderText="[Type Here]"
             ></TextArea>

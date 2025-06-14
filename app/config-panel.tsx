@@ -25,7 +25,6 @@ export default function ConfigPanel({currentConfig, configOptions, onChangeConfi
       temp.rotors[i].name = event.currentTarget[`rotor-${i}`].value; 
       temp.rotors[i].position = event.currentTarget[`rotor-${i}-position`].value; 
     }
-    console.log(temp);
     onChangeConfig(temp);
   }
 
