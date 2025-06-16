@@ -7,10 +7,12 @@ import ENIGMA_SPECS from "./enigma-specs.js";
 import { charToNum, numToChar} from "./enigma-util";
 import Rotor from "./rotor";
 import Reflector from "./reflector";
+import Zusatzwalze from "./zusatzwalze";
 
 export type EnigmaConfig = {
   rotors: {name: string, position: string}[], 
-  reflector: string 
+  reflector: string, 
+  zw?: {name: string, position: string}
 }
 
 export default class Enigma {
@@ -18,6 +20,7 @@ export default class Enigma {
   ETW!: string; 
   rotors!: Rotor[];   
   reflector!: Reflector; 
+  ZW?: Zusatzwalze; 
   plugboard!: Map<string, string>; 
   rotorPositions!: String[]; 
   keyboardLayout!: string[][]; 
@@ -37,13 +40,32 @@ export default class Enigma {
   setupMachine() {
     let data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
     this.ETW = data.ETW; 
-    this.rotors = []; 
-    for (let i = 0; i < data.NumRotors; i++) {
-      this.rotors.push(new Rotor(data.Rotors[i].Name, data.Rotors[i].Wiring, this.ETW, data.Rotors[i].Turnover));
-    }
-    this.reflector = new Reflector(data.Reflectors[1].Name, data.Reflectors[1].Wiring);
-    this.plugboard = new Map(); 
     this.keyboardLayout = data.Keyboard; 
+
+    if (!this.rotors) {
+      this.rotors = []; 
+      for (let i = 0; i < 3; i++) {
+        this.rotors.push(new Rotor(data.Rotors[i].Name, data.Rotors[i].Wiring, this.ETW, data.Rotors[i].Turnover));
+      }
+    } else {
+      for (let i = 0; i < 3; i++) {
+        let matchingRotors = data.Rotors.filter(r => r.Wiring == this.rotors[i].wiring && r.Name == this.rotors[i].name); 
+        if (matchingRotors.length == 0) {
+          this.rotors[i] = new Rotor(data.Rotors[i].Name, data.Rotors[i].Wiring, this.ETW, data.Rotors[i].Turnover);
+        } 
+      }
+    }
+
+    if (!this.reflector || data.Reflectors.filter(r => r.Name == this.reflector.name && r.Wiring == this.reflector.wiring.join()).length == 0) {
+      this.reflector = new Reflector(data.Reflectors[0].Name, data.Reflectors[0].Wiring);
+    }
+    if (data.Zusatzwalze.length > 0 && (!this.ZW || data.Zusatzwalze.filter(z => z.Name == this.ZW?.name && z.Wiring == this.ZW.wiring.join()).length == 0)) {
+      this.ZW = new Zusatzwalze(data.Zusatzwalze[0].Name, data.Zusatzwalze[0].Wiring, this.ETW);
+    } 
+    
+    if (!this.plugboard) {
+      this.plugboard = new Map(); 
+    }
 
   }
 
@@ -146,6 +168,20 @@ export default class Enigma {
       this.rotors[i] = new Rotor(rotorData[0].Name, rotorData[0].Wiring, this.ETW, rotorData[0].Turnover);
       this.rotors[i].setPosition(options.rotors[i].position); 
     }
+
+    if (options.zw?.name) {
+      this.changeZusatzwalze(options.zw.name, options.zw.position);
+    }
+  }
+
+  changeZusatzwalze(zwName: string, position: string) {
+    let data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
+    let zwData = data.Zusatzwalze.filter(zw => zw.Name == zwName);
+    if (zwData.length == 0) {
+      console.error("Error: no zusatzwalze with the specified name exists.");
+    } else {
+      this.ZW = new Zusatzwalze(zwData[0].Name, zwData[0].Wiring, this.ETW);
+    }
   }
 
   changeRotorPosition(rotorName: string, position: string) {
@@ -204,9 +240,17 @@ export default class Enigma {
       // console.log("Rotor " + this.rotors[i].name + " output letter " + c);
     }
 
+    if (this.ZW) {
+      c = this.ZW.encode(c, "left");
+    }
+
     // the output of the left rotor is put through the reflector 
     c = this.reflector.reflect(c);
     // console.log("Reflector " + this.reflector.name + " output letter " + c);
+
+    if (this.ZW) {
+      c = this.ZW.encode(c, "right");
+    }
 
     // then it is passed back through each rotor from left to right 
     for (let i = 0; i < this.rotors.length; i++) {

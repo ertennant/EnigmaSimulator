@@ -20,7 +20,7 @@ export default function RotorBlock({rotorInfo, onClick}: RotorBlockProps) {
       >
       {rotorInfo.map((rotor, i) => 
         <Rotor 
-          key={"rotor-" + rotor.name}
+          key={"rotor-" + i}
           name={rotor.name}
           pos={rotor.position}
           i={i}

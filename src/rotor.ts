@@ -1,4 +1,4 @@
-/* This class  */
+/* This class provides the rotor functionality. */
 
 import { charToNum, numToChar} from "./enigma-util";
 
@@ -18,29 +18,6 @@ export default class Rotor {
     this.turnoverPositions = turnoverPositions.map(letter => charToNum(letter));
     this.alphabetLength = wiring.length; 
   }
-
-  // input(letter: string): string {
-  //   let n = charToNum(letter); // easier to perform modular addition/subtraction on integers  
-
-  //   // offset input value by the rotor's current distance from position 0
-  //   // (because the signal will be received at the contact that is *the offset distance away* from the contact corresponding to the input letter)
-  //   n = (n + this.currentPosition) % this.alphabetLength; 
-
-  //   // get the letter this value maps to, then undo the effect of the offset before sending the output to the next rotor 
-  //   // (because the next rotor does not know how this rotor's position, and may have its own offset)
-  //   n = (charToNum(this.wiring.charAt(n)) - this.currentPosition + this.alphabetLength) % this.alphabetLength;
-
-  //   // output the resulting letter 
-  //   return numToChar(n); 
-  // }
-
-  // output(letter: string): string {
-  //   let n = charToNum(letter);
-  //   n = (n + this.currentPosition) % this.alphabetLength; 
-  //   n = charToNum(this.alphabet.charAt(this.wiring.indexOf(numToChar(n))));
-  //   n = (n - this.currentPosition + this.alphabetLength) % this.alphabetLength;
-  //   return numToChar(n); 
-  // }
 
   encode(letter: string, direction: string) {
     let n = charToNum(letter);

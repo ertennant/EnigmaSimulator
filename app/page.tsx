@@ -1,11 +1,11 @@
 "use client";
 
-import Enigma from "@/src/enigma";
+import Enigma, { EnigmaConfig } from "@/src/enigma";
 import Lightboard from "./lightboard";
 import Keyboard from "./keyboard";
 import Plugboard from "./plugboard";
 import RotorBlock from "./rotor-block";
-import { SetStateAction, useEffect, useState, useRef, KeyboardEventHandler, useCallback, ChangeEvent } from "react";
+import { SetStateAction, useEffect, useState, useRef, useCallback, ChangeEvent } from "react";
 import ConfigPanel from "./config-panel";
 import ENIGMA_SPECS from "@/src/enigma-specs";
 import TextArea from "./text-area";
@@ -20,6 +20,7 @@ export default function Home() {
   const [showConfigPanel, setShowConfigPanel] : [boolean, React.Dispatch<SetStateAction<boolean>>] = useState(false); // open/close the configuration panel 
   const [inputText, setInputText] : [string, React.Dispatch<SetStateAction<string>>]= useState(""); // the text input by the user 
   const [outputText, setOutputText] : [string, React.Dispatch<SetStateAction<string>>]= useState(""); // the encoding of inputText produced by the enigma algorithm 
+  const [initialConfig, setInitialConfig] : [EnigmaConfig, React.Dispatch<SetStateAction<EnigmaConfig>>] = useState({rotors: enigma.current.getRotorInfo(), reflector: enigma.current.reflector.name});
 
   /**
    * If the user presses a letter key, encodes that letter and appends it to the message. 
@@ -87,6 +88,9 @@ export default function Home() {
    */
   function handleChangeModel(model: string): void {
     enigma.current.changeModel(model);
+    if (initialConfig) {
+      enigma.current.reinitialize(initialConfig);
+    }
     if (inputText.length > 0) {
       // if there is an existing message, re-encode it using the new machine 
       setOutputText(enigma.current.encodeMessage(inputText));
@@ -98,8 +102,9 @@ export default function Home() {
    * Changes the rotors, the rotor positions, and/or the reflector. 
    * @param config The desired configuration settings: the reflector name, and an array of objects specifying the names and positions of the rotors. 
    */
-  function handleChangeConfig(config: {reflector: string, rotors: {name: string, position: string}[]}) {
+  function handleChangeConfig(config: EnigmaConfig) {
     setShowConfigPanel(false);
+    setInitialConfig(config);
     enigma.current.reinitialize(config);
     if (inputText.length > 0) {
       setOutputText(enigma.current.encodeMessage(inputText));
@@ -113,8 +118,10 @@ export default function Home() {
   function handleChangePlugboard(pairs: string[][]): void {
     enigma.current.setPlugboard(pairs);
     if (inputText.length > 0) {
+      enigma.current.reinitialize(initialConfig);
       setOutputText(enigma.current.encodeMessage(inputText));
     }
+    setPlugboard(Array.from(enigma.current.plugboard));
   }
   
   return (
@@ -140,12 +147,14 @@ export default function Home() {
             {
               model: enigma.current.model,
               reflector: enigma.current.reflector.name,
+              zw: {"name": enigma.current.ZW?.name ?? "", "position": enigma.current.ZW?.getPosition() ?? ""}, 
               rotors: rotorInfo
             }
           }
           configOptions={
             { rotors: ENIGMA_SPECS[enigma.current.model as keyof typeof ENIGMA_SPECS].Rotors.map(r => r.Name),
               reflectors: ENIGMA_SPECS[enigma.current.model as keyof typeof ENIGMA_SPECS].Reflectors.map(r => r.Name),
+              zw: ENIGMA_SPECS[enigma.current.model as keyof typeof ENIGMA_SPECS].Zusatzwalze.map(z => z.Name),
             }
           }
           onChangeConfig={handleChangeConfig}

@@ -3,7 +3,6 @@
 const ENIGMA_SPECS = {
   "Enigma I": {
     "ETW": "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 
-    "NumRotors": 3, 
     "Keyboard": [
       ["Q","W","E","R","T","Z","U","I","O"],
       ["A","S","D","F","G","H","J","K"],
@@ -41,11 +40,11 @@ const ENIGMA_SPECS = {
       { "Name": "C",
         "Wiring": "FVPJIAOYEDRZXWGCTKUQSBNMHL"
       }
-    ]
+    ],
+    "Zusatzwalze": []
   },
   "Enigma M3": {
     "ETW": "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 
-    "NumRotors": 3, 
     "Keyboard": [
       ["Q","W","E","R","T","Z","U","I","O"],
       ["A","S","D","F","G","H","J","K"],
@@ -95,11 +94,11 @@ const ENIGMA_SPECS = {
       { "Name": "C",
         "Wiring": "FVPJIAOYEDRZXWGCTKUQSBNMHL"
       }
-    ]
+    ],
+    "Zusatzwalze": []
   },
   "Enigma M4": {
     "ETW": "ABCDEFGHIJKLMNOPQRSTUVWXYZ", 
-    "NumRotors": 4, 
     "Keyboard": [
       ["Q","W","E","R","T","Z","U","I","O"],
       ["A","S","D","F","G","H","J","K"],
@@ -143,19 +142,21 @@ const ENIGMA_SPECS = {
       },
     ],
     "Reflectors": [
-      { "Name": "Beta",
-        "Wiring": "LEYJVCNIXWPBQMDRTAKZGFUHOS"
-      },
-      { "Name": "Gamma",
-        "Wiring": "FSOKANUERHMBTIYCWLQPZXVGJD"
-      },
-      { "Name": "B",
+      { "Name": "b",
         "Wiring": "ENKQAUYWJICOPBLMDXZVFTHRGS"
       },
-      { "Name": "C",
+      { "Name": "c",
         "Wiring": "RDOBJNTKVEHMLFCWZAXGYIPSUQ"
       }
-    ]    
+    ],
+    "Zusatzwalze": [
+      { "Name": "β",
+        "Wiring": "LEYJVCNIXWPBQMDRTAKZGFUHOS"
+      },
+      { "Name": "γ",
+        "Wiring": "FSOKANUERHMBTIYCWLQPZXVGJD"
+      }
+    ]
   }
 }
 
