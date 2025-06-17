@@ -35,22 +35,22 @@ export default function ConfigPanel({currentConfig, configOptions, onChangeConfi
       className={"p-8 border-2 w-fit border-zinc-500 gap-2 grid grid-rows-4 place-items-stretch" + (configOptions.zw.length > 0 ? " grid-cols-5" : " grid-rows-4")}
       onSubmit={handleChangeConfig}
       >
-      <label htmlFor="reflector" className="font-[Roboto] col-span-1 row-span-1 row-start-1 col-start-1 text-center text-white content-center w-[5em]">Reflector</label>
-      <select name="reflector" defaultValue={currentConfig.reflector} className="font-[Roboto_Mono] text-white col-span-1 row-span-1 col-start-1 row-start-2 w-[5em]">
+      <label htmlFor="reflector" className="font-[Roboto] col-span-1 row-span-1 row-start-1 col-start-1 text-center text-white content-center w-[3em] xs:w-[5em]">Reflector</label>
+      <select name="reflector" defaultValue={currentConfig.reflector} className="font-[Roboto_Mono] text-white col-span-1 row-span-1 col-start-1 row-start-2 w-[3em] xs:w-[5em]">
         {configOptions.reflectors.map((reflector) => 
           <option value={reflector} key={"reflector-opt-" + reflector}>{reflector}</option>
         )}
       </select>
       {configOptions.zw.length > 0 && currentConfig.zw ? 
       <>
-        <label htmlFor="zw" className="font-[Roboto] col-span-1 row-span-1 row-start-1 col-start-2 text-center text-white content-center w-[5em] ">Zusatzwalze</label>
-        <select name="zusatzwalze" defaultValue={currentConfig.zw.name} className="font-[Roboto_Mono] text-white col-span-1 row-span-1 col-start-2 row-start-2 w-[5em]">
+        <label htmlFor="zw" className="font-[Roboto] col-span-1 row-span-1 row-start-1 col-start-2 text-center text-white content-center w-[3em] xs:w-[5em] ">Zusatzwalze</label>
+        <select name="zusatzwalze" defaultValue={currentConfig.zw.name} className="font-[Roboto_Mono] text-white col-span-1 row-span-1 col-start-2 row-start-2 w-[3em] xs:w-[5em]">
           {configOptions.zw.map((z) => 
             <option value={z} key={"zw-opt-" + z}>{z}</option>
           )}
         </select>
         <input 
-          className="font-[Roboto_Mono] text-white col-span-1 row-span-1 row-start-3 text-center w-[5em] bg-black rounded-md" 
+          className="font-[Roboto_Mono] text-white col-span-1 row-span-1 row-start-3 text-center w-[3em] xs:w-[5em] bg-black rounded-md" 
           type="text" 
           maxLength={1} 
           name={`zw-position`} 
@@ -63,7 +63,7 @@ export default function ConfigPanel({currentConfig, configOptions, onChangeConfi
       {currentConfig.rotors.map((cr, i) => 
         <select 
           key={"rotor-select-" + i}
-          className="font-[Roboto_Mono] text-white row-start-2 col-span-1 row-span-1 w-[5em]" 
+          className="font-[Roboto_Mono] text-white row-start-2 col-span-1 row-span-1 w-[3em] xs:w-[5em]" 
           name={"rotor-" + i} 
           defaultValue={cr.name ?? "hi"}
         >
@@ -74,7 +74,7 @@ export default function ConfigPanel({currentConfig, configOptions, onChangeConfi
       )}
       {currentConfig.rotors.map((cr, i) => 
         <input 
-          className="font-[Roboto_Mono] text-white col-span-1 row-span-1 row-start-3 text-center w-[5em] bg-black rounded-md" 
+          className="font-[Roboto_Mono] text-white col-span-1 row-span-1 row-start-3 text-center w-[3em] xs:w-[5em] bg-black rounded-md" 
           type="text" 
           maxLength={1} 
           name={"rotor-" + i + "-position"} 

@@ -17,7 +17,7 @@ export default function Keyboard({currentValue, layout, onClick, isEnabled}: Key
           {row.map(key => 
             <button 
               key={"key-" + key}
-              className={"inline-block mx-3 my-2 letter rounded-full border-2 text-2xl font-[400] " + (key == currentValue ? " text-neutral-300 border-zinc-500 translate-y-2 " : "") + (isEnabled ? "bg-metal cursor-pointer text-neutral-200 border-zinc-400 " : "bg-metal-disabled cursor-default text-neutral-500 border-zinc-500 ")}
+              className={"m-[1px] sm:mx-3 sm:my-2 letter rounded-full border-2 text-2xl font-[400] " + (key == currentValue ? " text-neutral-300 border-zinc-500 translate-y-2 " : "") + (isEnabled ? "bg-metal cursor-pointer text-neutral-200 border-zinc-400 " : "bg-metal-disabled cursor-default text-neutral-500 border-zinc-500 ")}
               onClick={isEnabled ? () => onClick(key) : undefined}
             >{key}</button>
           )}

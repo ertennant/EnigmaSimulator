@@ -125,7 +125,7 @@ export default function Home() {
   }
   
   return (
-    <main className="relative p-4 bg-black h-full flex flex-col justify-center items-center" >
+    <main className="relative xs:p-4 bg-black h-full flex flex-col justify-center items-center" >
       <button 
         className="absolute right-0 top-0 m-2 cursor-pointer rounded-full p-2 hover:bg-zinc-700" 
         onClick={() => setShowLightboard(!showLightboard)}
@@ -139,7 +139,7 @@ export default function Home() {
         >
         </Image>
       </button>
-      <div className="p-4 bg-zinc-900 flex flex-col items-center justify-center gap-4" >
+      <div className="xs:p-4 bg-zinc-900 flex flex-col items-center justify-center gap-4" >
         {showConfigPanel 
         ? 
         <ConfigPanel

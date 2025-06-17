@@ -16,7 +16,7 @@ type TextAreaProps = {
 
 export default function TextArea({content, editable, onChange, css, placeholderText, isEnabled}: TextAreaProps) {
   return (
-    <textarea className={css + (isEnabled ? " text-white " : " text-zinc-500 ") + " font-[Roboto_Mono] p-2 text-lg bg-black w-128 h-48 resize-none rounded-sm"}
+    <textarea className={css + (isEnabled ? " text-white " : " text-zinc-500 ") + " font-[Roboto_Mono] p-2 text-lg bg-black w-full sm:w-128 h-48 resize-none rounded-sm"}
       value={content}
       disabled={!editable || !isEnabled}
       onChange={editable && isEnabled && onChange ? onChange : undefined}

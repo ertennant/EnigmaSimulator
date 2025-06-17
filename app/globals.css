@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --breakpoint-xs: 30rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,11 +31,19 @@ body {
 }
 
 .letter {
-  width: 1.6em;
-  height: 1.6em;
+  display: inline-block;
+  width: 1.4em;
+  height: 1.4em;
   font-family: 'Roboto';
   text-align: center;
   align-content: center;
+}
+
+@media (width >= 40rem) {
+  .letter {
+    width: 1.6em;
+    height: 1.6em;
+  }
 }
 
 .bg-metal {

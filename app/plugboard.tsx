@@ -31,7 +31,7 @@ export default function Plugboard({mappings, onSubmit, isVisible, togglePlugboar
   }
 
   return (
-    <div className="flex flex-row justify-center p-2 text-center bg-zinc-800 w-150 flex-wrap">
+    <div className="flex flex-row justify-center p-2 text-center bg-zinc-800 w-full sm:w-150 flex-wrap">
       <button onClick={togglePlugboard} className={(isVisible ? "hidden" : "") + " button bg-radial-[at_25%_25%] from-neutral-500 to-neutral-700 to-75% rounded-md border-2 border-zinc-400 px-2 py-1 text-white font-bold font-[Roboto_Mono]"}>Show Plugboard</button>
       <form className={(isVisible ? "" : "hidden")} onSubmit={handleSubmit}>
         {
