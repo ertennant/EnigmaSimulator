@@ -21,7 +21,7 @@ export default function ConfigPanel({currentConfig, configOptions, onChangeConfi
 
   function handleChangeConfig(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); 
-    let temp = {...currentConfig};
+    const temp = {...currentConfig};
     temp.reflector = event.currentTarget.reflector.value; 
     for (let i = 0; i < currentConfig.rotors.length; i++) {
       temp.rotors[i].name = event.currentTarget[`rotor-${i}`].value; 

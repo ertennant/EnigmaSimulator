@@ -40,8 +40,8 @@ export default function Home() {
       setOutputText(outputText.slice(0, outputText.length - 1));
       setRotorInfo(enigma.current.getRotorInfo());
     } else if (event.key.length == 1) {
-      let key = event.key.toUpperCase(); 
-      let c = enigma.current.encodeLetter(key);
+      const key = event.key.toUpperCase(); 
+      const c = enigma.current.encodeLetter(key);
       setInputText(inputText + key);
       setOutputText(outputText + c);
       setRotorInfo(enigma.current.getRotorInfo());
@@ -67,7 +67,7 @@ export default function Home() {
       setRotorInfo(enigma.current.getRotorInfo());
     } else if (key.length == 1) {
       key = key.toUpperCase(); 
-      let c = enigma.current.encodeLetter(key);
+      const c = enigma.current.encodeLetter(key);
       setInputText(inputText + key);
       setOutputText(outputText + c);
       setRotorInfo(enigma.current.getRotorInfo());

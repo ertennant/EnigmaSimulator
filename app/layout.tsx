@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-between h-screen w-full`}
+        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} ${robotoMono.variable} antialiased flex flex-col justify-between h-screen w-full`}
       >
         {children}
         <footer className="flex flex-row justify-between bg-black text-white items-center p-2">

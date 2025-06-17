@@ -14,10 +14,10 @@ type PlugboardProps = {
 export default function Plugboard({mappings, onSubmit, isVisible, togglePlugboard}: PlugboardProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); 
-    let pairs = []; 
+    const pairs = []; 
     for (let i = 0; i < 10; i++) {
-      let a = event.currentTarget[`pair-${i}-1`].value; 
-      let b = event.currentTarget[`pair-${i}-2`].value; 
+      const a = event.currentTarget[`pair-${i}-1`].value; 
+      const b = event.currentTarget[`pair-${i}-2`].value; 
       if (a && b) {
         pairs.push([a, b]);
       }

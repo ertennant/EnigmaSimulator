@@ -4,7 +4,7 @@
  */
 
 import ENIGMA_SPECS from "./enigma-specs.js";
-import { charToNum, numToChar} from "./enigma-util";
+import { numToChar} from "./enigma-util";
 import Rotor from "./rotor";
 import Reflector from "./reflector";
 import Zusatzwalze from "./zusatzwalze";
@@ -22,7 +22,7 @@ export default class Enigma {
   reflector!: Reflector; 
   ZW?: Zusatzwalze; 
   plugboard!: Map<string, string>; 
-  rotorPositions!: String[]; 
+  rotorPositions!: string[]; 
   keyboardLayout!: string[][]; 
 
   constructor(model: string) {
@@ -38,7 +38,7 @@ export default class Enigma {
    * Initializes the machine configuration. 
    */
   setupMachine() {
-    let data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
+    const data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
     this.ETW = data.ETW; 
     this.keyboardLayout = data.Keyboard; 
 
@@ -49,7 +49,7 @@ export default class Enigma {
       }
     } else {
       for (let i = 0; i < 3; i++) {
-        let matchingRotors = data.Rotors.filter(r => r.Wiring == this.rotors[i].wiring && r.Name == this.rotors[i].name); 
+        const matchingRotors = data.Rotors.filter(r => r.Wiring == this.rotors[i].wiring && r.Name == this.rotors[i].name); 
         if (matchingRotors.length == 0) {
           this.rotors[i] = new Rotor(data.Rotors[i].Name, data.Rotors[i].Wiring, this.ETW, data.Rotors[i].Turnover);
         } 
@@ -125,7 +125,7 @@ export default class Enigma {
   }
 
   changeReflector(newReflector: string) {
-    let reflectorData : { Name: string; Wiring: string; } = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Reflectors.filter(r => r.Name == newReflector)[0];
+    const reflectorData : { Name: string; Wiring: string; } = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Reflectors.filter(r => r.Name == newReflector)[0];
     if (!reflectorData) {
       throw new Error("Error: cannot change reflectors. Enigma model " + this.model + " does not have any reflector with the specified name.");
     }
@@ -137,7 +137,7 @@ export default class Enigma {
 
   changeRotor(position: number, rotorName: string) {
     if (position > -1 && position < this.rotors.length) {
-      let rotorData : {Name: string; Wiring: string; Turnover: string[]; } = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Rotors.filter(r => r.Name == rotorName)[0];
+      const rotorData : {Name: string; Wiring: string; Turnover: string[]; } = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Rotors.filter(r => r.Name == rotorName)[0];
       if (rotorData) {
         this.rotors[position] = new Rotor(rotorData.Name, rotorData.Wiring, this.ETW, rotorData.Turnover);
       } else {
@@ -161,7 +161,7 @@ export default class Enigma {
     this.changeReflector(options.reflector);
 
     for (let i = 0; i < this.rotors.length; i++) {
-      let rotorData = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Rotors.filter(r => r.Name == options.rotors[i].name);
+      const rotorData = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS].Rotors.filter(r => r.Name == options.rotors[i].name);
       if (!rotorData) {
         throw new Error("Error: no rotor with the specified name exists.");
       }
@@ -175,12 +175,13 @@ export default class Enigma {
   }
 
   changeZusatzwalze(zwName: string, position: string) {
-    let data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
-    let zwData = data.Zusatzwalze.filter(zw => zw.Name == zwName);
+    const data = ENIGMA_SPECS[this.model as keyof typeof ENIGMA_SPECS]; 
+    const zwData = data.Zusatzwalze.filter(zw => zw.Name == zwName);
     if (zwData.length == 0) {
       console.error("Error: no zusatzwalze with the specified name exists.");
     } else {
       this.ZW = new Zusatzwalze(zwData[0].Name, zwData[0].Wiring, this.ETW);
+      this.ZW.setPosition(position);
     }
   }
 
