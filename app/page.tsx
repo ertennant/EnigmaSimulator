@@ -57,28 +57,38 @@ export default function Home() {
    * Equivalent to handleKeyEvent, but takes a string instead of a KeyboardEvent parameter. 
    * @param key The letter the user entered, or "Backspace" if they used the backspace key. 
    */
-  function handleInputLetter(key: string): void {
-    if (key == "Backspace") {
-      if (inputText.length == 0) return; 
+  function handleInputText(text: string): void {
+    text = text.toUpperCase(); 
+    const msg = enigma.current.encodeMessage(text);
+    setInputText(inputText + text);
+    setOutputText(outputText + msg);
+    setRotorInfo(enigma.current.getRotorInfo());
+  }
 
+  function handleUndo() {
+    if (inputText.length == 0) return; 
+
+    if (inputText.charAt(inputText.length - 1) != " ") {
       enigma.current.undo(); 
-      setInputText(inputText.slice(0, inputText.length - 1));
-      setOutputText(outputText.slice(0, outputText.length - 1));
       setRotorInfo(enigma.current.getRotorInfo());
-    } else if (key.length == 1) {
-      key = key.toUpperCase(); 
-      const c = enigma.current.encodeLetter(key);
-      setInputText(inputText + key);
-      setOutputText(outputText + c);
-      setRotorInfo(enigma.current.getRotorInfo());
-    } 
+    }
+    setInputText(inputText.slice(0, inputText.length - 1));
+    setOutputText(outputText.slice(0, outputText.length - 1));
+  }
+
+  function handleClear() {
+    if (inputText.length == 0) return; 
+
+    setInputText("");
+    setOutputText("");
+    enigma.current.reinitialize(initialConfig); 
   }
 
   function handleChangeInput(e: ChangeEvent<HTMLTextAreaElement>) {
     if (e.currentTarget.value.length < inputText.length) {
-      handleInputLetter("Backspace");
+      handleUndo(); 
     } else {
-      handleInputLetter(e.currentTarget.value.charAt(e.currentTarget.value.length - 1));
+      handleInputText(e.currentTarget.value.slice(inputText.length));
     }
   }
 
@@ -176,7 +186,7 @@ export default function Home() {
             <Keyboard 
               currentValue={inputText.length > 0 ? inputText.charAt(inputText.length - 1) : ""} 
               layout={enigma.current.keyboardLayout}
-              onClick={handleInputLetter}
+              onClick={handleInputText}
               isEnabled={!showConfigPanel && !showPlugboard}
             ></Keyboard>
           </>
@@ -187,6 +197,7 @@ export default function Home() {
               content={inputText} 
               editable={true} 
               onChange={handleChangeInput} 
+              onClear={handleClear}
               isEnabled={!showConfigPanel && !showPlugboard}
               css="border-2 border-zinc-500" 
               placeholderText="[Type Here]"
